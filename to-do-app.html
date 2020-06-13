@@ -15,10 +15,10 @@
     * { box-sizing: border-box; }
 
     body {
-      background: url('./assets/anete-lusina-2JknzBYDu6k-unsplash.jpg') center center/cover no-repeat;
+      background: #d3d0d0 url('./assets/anete-lusina-2JknzBYDu6k-unsplash.jpg') center center/cover no-repeat;
       font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
       height: 100vh;
-      width: 100vw;
+      width: 100%;
     }
 
     h1 {
@@ -159,6 +159,9 @@
       cursor: pointer;
     }
 
+    .ui-state-default {
+      background: #fff;
+    }
   </style>
 </head>
 <body>
@@ -168,7 +171,14 @@
     <div class="page-header"> 
       <h1>jQuery To-Do Application</h1>
     </div>
-
+    <div class="totals">
+      <button type="button" class="btn btn-success">
+        Completed <span class="badge badge-light completed"> 0</span>
+      </button>
+      <button type="button" class="btn btn-success">
+        Total Tasks <span class="badge badge-light total-tasks"> 0</span>
+      </button>
+    </div>
     <form>
       <input class="form-control" type="text" placeholder="Add an item...">
       <button type="button" class="btn btn-danger">Delete All</button>
@@ -188,10 +198,13 @@
 $(document).ready(function(){
 
   let count = 1;
+  let completed = 0;
+  let total = 0;
+
   $('.form-control').focus();
 
   $(function() {
-    $( "#sortable" ).sortable({
+    $("#sortable").sortable({
       placeholder: "ui-state-highlight"
     });
     $( "#sortable" ).disableSelection();
@@ -228,49 +241,64 @@ $(document).ready(function(){
   
     $('input').val("");//Clear Input
     count++;
+    total++;
+    $('.total-tasks').html(total);
   });
 
   //Toggle text color when user clicks a list item
   $(document).on('click', '.card', function(e){
 
     let isChecked = $(this).children('div').children('input[type="checkbox"]').is(':checked');
-    //console.log(isChecked);
 
     if(isChecked){
       $(this).css('color', 'black');
       $(this).children().children('input').prop('checked', false);
       $(this).prependTo($('.list'));
+      completed--;
+      $('.completed').html(completed);
+
     }
     else{
       $(this).css('color', 'gray');
       $(this).children().children('input').prop('checked', true);
       $(this).appendTo($('.list'));//Move item to bottom of list
+      completed++;
+      $('.completed').html(completed);
     }
   }).on('click', '.btn', function(e){ e.stopPropagation();})
 
   $(document).on('click', '.form-check-input', function(){
-    let status = $(this).is(':checked');
-    console.log('status '+ status);
-    
+
+    let status = $(this).is(':checked');    
     if(status == true){
       $(this).prop('checked', false);
+      completed--;
+      $('.completed').html(completed);
     }
     else {
       $(this).prop('checked', true);
+      completed++;
+      $('.completed').html(completed);
     }
   })
   
   //Remove a single item
   $(document).on('click', '.btn-warning', function(){    
     $(this).parent().parent().remove();
+    completed--;
+    total--;
+    $('.total-tasks').html(total);
+    $('.completed').html(completed);
   })
 
   //Remove all items
   $(document).on('click', '.btn-danger', function(){
     $('.list').empty();
     count = 1;
+    total = completed = 0;
+    $('.total-tasks').html(total);
+    $('.completed').html(completed);
   })
-
 
 })
 </script>
