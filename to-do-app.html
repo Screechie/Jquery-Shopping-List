@@ -197,8 +197,8 @@
 // INSERT CODE HERE
 $(document).ready(function(){
 
-  let count = 1;
   let completed = 0;
+  let count = 1;
   let total = 0;
 
   $('.form-control').focus();
@@ -254,7 +254,10 @@ $(document).ready(function(){
       $(this).css('color', 'black');
       $(this).children().children('input').prop('checked', false);
       $(this).prependTo($('.list'));
-      completed--;
+
+      if(completed !== 0){
+        completed--;
+      }
       $('.completed').html(completed);
 
     }
@@ -267,25 +270,31 @@ $(document).ready(function(){
     }
   }).on('click', '.btn', function(e){ e.stopPropagation();})
 
-  $(document).on('click', '.form-check-input', function(){
 
-    let status = $(this).is(':checked');    
+//Update counters, change font color and move items to bottom when toggling checkboxes
+  $(document).on('click', '.form-check-input', function(e){
+
+    let status = $(this).is(':checked');
+    let checkCount = $('input:checkbox:checked').length;
+
     if(status == true){
       $(this).prop('checked', false);
-      completed--;
-      $('.completed').html(completed);
+      $('.completed').html(checkCount);
     }
     else {
       $(this).prop('checked', true);
-      completed++;
-      $('.completed').html(completed);
+      $('.completed').html(checkCount);
     }
   })
   
   //Remove a single item
   $(document).on('click', '.btn-warning', function(){    
     $(this).parent().parent().remove();
-    completed--;
+
+    if(completed !== 0){
+      completed--;
+    }
+
     total--;
     $('.total-tasks').html(total);
     $('.completed').html(completed);
